@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapPhone Extractor - Free Google Maps Phone Scraper</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-gradient-to-r from-blue-50 to-indigo-50 font-sans">
+    <div class="container mx-auto p-6 max-w-4xl">
+        <h1 class="text-4xl font-extrabold text-center mb-4 text-indigo-700 animate__animated animate__fadeIn">MapPhone Extractor</h1>
+        <p class="text-center text-gray-600 mb-8 animate__animated animate__fadeIn animate__delay-1s">Extract business phone numbers from Google Maps for lead generation.</p>
+        
+        <div class="bg-white p-8 rounded-xl shadow-2xl mb-6 animate__animated animate__zoomIn">
+            <div class="mb-6">
+                <label for="searchTerm" class="block text-sm font-medium text-gray-700">Search Term</label>
+                <input type="text" id="searchTerm" placeholder="e.g., dental clinics in London" class="mt-2 block w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+            <button id="scrapeBtn" class="w-full bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300">Start Scraping</button>
+        </div>
+        
+        <div id="progress" class="hidden bg-white p-6 rounded-xl shadow-lg mb-6">
+            <p id="progressText" class="text-indigo-700 font-medium"></p>
+            <div class="w-full bg-gray-200 rounded-full h-3 mt-3">
+                <div id="progressBar" class="bg-indigo-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <div id="results" class="hidden bg-white p-8 rounded-xl shadow-2xl">
+            <h2 class="text-2xl font-semibold mb-6 text-indigo-700">Results</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr class="bg-indigo-100">
+                            <th class="px-6 py-3 text-left text-indigo-700">Business Name</th>
+                            <th class="px-6 py-3 text-left text-indigo-700">Website</th>
+                            <th class="px-6 py-3 text-left text-indigo-700">Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTable"></tbody>
+                </table>
+            </div>
+            <div class="mt-6 flex space-x-4">
+                <a id="downloadWebsites" class="hidden bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-300" href="#">Download Websites CSV</a>
+                <a id="downloadPhones" class="hidden bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition duration-300" href="#">Download Phones CSV</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for Permission -->
+    <div id="permissionModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-60 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full animate__animated animate__zoomIn">
+            <h2 id="modalTitle" class="text-2xl font-semibold mb-4 text-indigo-700">Permission to Scrape</h2>
+            <p id="modalMessage" class="mb-6 text-gray-600"></p>
+            <div class="flex space-x-4">
+                <button id="proceedBtn" class="bg-indigo-600 text-white p-3 rounded-lg hover:bg-indigo-700 transition duration-300">Proceed</button>
+                <button id="cancelBtn" class="bg-red-600 text-white p-3 rounded-lg hover:bg-red-700 transition duration-300">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
