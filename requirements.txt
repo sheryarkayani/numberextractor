@@ -1,20 +1,12 @@
-# Web framework
+# This file is used to install the required packages for the project.
 flask==2.0.1
-
-# Web automation
-selenium==4.8.0
-webdriver-manager==3.8.5
-
-# Production WSGI server
+selenium==4.18.1
 gunicorn==20.1.0
-
-# Packaging as a standalone executable
-pyinstaller==6.13.0
-
-
-# Optional: add these for stability and smoother builds
-click==8.0.4            # Flask CLI dependency
-itsdangerous==2.0.1     # Flask security dependency
-jinja2==3.0.3           # Flask templating
-markupsafe==2.0.1       # Flask dependency
-werkzeug==2.0.3         # Flask server utility
+pyinstaller==6.12.0
+webdriver-manager==4.0.2
+tenacity==8.5.0
+click==8.0.4
+itsdangerous==2.0.1
+jinja2==3.0.3
+markupsafe==2.0.1
+werkzeug==2.0.3

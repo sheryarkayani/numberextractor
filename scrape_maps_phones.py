@@ -1,6 +1,9 @@
 import time
 import csv
 import re
+import os
+import logging
+import random
 from urllib.parse import urlparse
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -9,38 +12,45 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException
 from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.utils import ChromeType
+from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
+
+# Configure logging to file and console
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('scraper.log'),
+        logging.StreamHandler()
+    ]
+)
 
 def setup_driver():
-    """Set up visible Chrome driver with compatible ChromeDriver."""
-    print("Initializing Chrome browser (visible mode)...")
+    """Set up Chrome driver, headless for production, visible for local."""
+    logging.info("Initializing Chrome browser...")
     chrome_options = Options()
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+    
+    is_headless = os.getenv("HEADLESS", "false").lower() == "true"
+    if is_headless:
+        logging.info("Running in headless mode for production.")
+        chrome_options.add_argument("--headless=new")
+    
     try:
-        # Attempt to get the latest compatible ChromeDriver
-        service = Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())
+        service = Service(ChromeDriverManager().install())
+        logging.info("Starting ChromeDriver...")
         driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.maximize_window()
-        print("Chrome browser opened successfully.")
+        if not is_headless:
+            driver.maximize_window()
+        logging.info("Chrome browser initialized successfully.")
         return driver
     except Exception as e:
-        print(f"Error initializing Chrome driver: {e}")
-        print("Attempting to use a fallback ChromeDriver version...")
-        try:
-            # Fallback to a known compatible version (e.g., for Chrome 126)
-            service = Service(ChromeDriverManager(version="126.0.6478.126").install())
-            driver = webdriver.Chrome(service=service, options=chrome_options)
-            driver.maximize_window()
-            print("Fallback ChromeDriver initialized successfully.")
-            return driver
-        except Exception as fallback_e:
-            print(f"Fallback failed: {fallback_e}")
-            print("Ensure Google Chrome is installed and compatible with webdriver-manager.")
-            return None
+        logging.error(f"Error initializing Chrome driver: {str(e)}")
+        return None
 
 def clean_url(url):
     """Clean URL to remove query strings and fragments."""
@@ -58,9 +68,14 @@ def clean_phone(phone):
         return phone
     return ""
 
-def scroll_and_paginate(driver, scroll_pane_selector, max_time=120):
-    """Scroll and paginate Google Maps results to load more businesses."""
-    print("Scrolling and paginating Google Maps results...")
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_fixed(2),
+    retry=retry_if_exception_type((TimeoutException, StaleElementReferenceException))
+)
+def scroll_and_paginate(driver, scroll_pane_selector, max_time=300):
+    """Scroll and paginate Google Maps results until no more pages."""
+    logging.info("Scrolling and paginating Google Maps results...")
     try:
         start_time = time.time()
         while time.time() - start_time < max_time:
@@ -69,33 +84,38 @@ def scroll_and_paginate(driver, scroll_pane_selector, max_time=120):
                     EC.presence_of_element_located((By.CSS_SELECTOR, scroll_pane_selector))
                 )
                 driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight);", scroll_pane)
-                time.sleep(1)
+                time.sleep(random.uniform(1, 3))  # Random delay
             except TimeoutException:
-                print("Timeout scrolling results pane.")
+                logging.warning("Timeout scrolling results pane.")
             
             try:
-                next_button = driver.find_element(By.CSS_SELECTOR, "button[aria-label='Next']")
+                next_button = driver.find_element(By.CSS_SELECTOR, "button[aria-label*='Next']")
                 if next_button.get_attribute("disabled"):
-                    print("No more pages to load.")
-                    break
-                print("Clicking 'Next' to load more results...")
+                    logging.info("No more pages to load.")
+                    return True
+                logging.info("Clicking 'Next' to load more results...")
                 next_button.click()
-                WebDriverWait(driver, 5).until(
-                    EC.staleness_of(next_button)
-                )
-                time.sleep(2)
+                WebDriverWait(driver, 5).until(EC.staleness_of(next_button))
+                time.sleep(random.uniform(1, 3))
             except NoSuchElementException:
-                print("No 'Next' button found.")
-                break
+                logging.info("No 'Next' button found. End of results.")
+                return True
             except TimeoutException:
-                print("Timeout loading next page.")
-                break
+                logging.warning("Timeout loading next page.")
+        logging.info("Max pagination time reached.")
+        return False
     except Exception as e:
-        print(f"Error scrolling/paginating: {e}")
+        logging.error(f"Error scrolling/paginating: {str(e)}")
+        return False
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_fixed(2),
+    retry=retry_if_exception_type(TimeoutException)
+)
 def get_business_links(driver, results_selector):
     """Extract links to business details pages."""
-    print("Extracting business detail page links...")
+    logging.info("Extracting business detail page links...")
     try:
         results = WebDriverWait(driver, 5).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, results_selector))
@@ -106,20 +126,25 @@ def get_business_links(driver, results_selector):
                 link = result.get_attribute("href")
                 if link and "https://www.google.com/maps/place/" in link:
                     links.append(link)
-            except:
+            except StaleElementReferenceException:
                 continue
-        print(f"Found {len(links)} business links.")
+        logging.info(f"Found {len(links)} business links.")
         return links
     except TimeoutException:
-        print("Timeout while loading business results.")
+        logging.warning("Timeout while loading business results.")
         return []
     except Exception as e:
-        print(f"Error extracting business links: {e}")
+        logging.error(f"Error extracting business links: {str(e)}")
         return []
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_fixed(2),
+    retry=retry_if_exception_type((TimeoutException, StaleElementReferenceException))
+)
 def extract_business_info(driver, url):
     """Extract business name, website URL, and phone number from a business details page."""
-    print(f"Visiting business page: {url}")
+    logging.info(f"Visiting business page: {url}")
     try:
         driver.get(url)
         WebDriverWait(driver, 5).until(
@@ -130,50 +155,51 @@ def extract_business_info(driver, url):
         try:
             name_element = driver.find_element(By.TAG_NAME, "h1")
             business_name = name_element.text.strip()
-            print(f"Business name: {business_name}")
+            logging.info(f"Business name: {business_name}")
         except NoSuchElementException:
-            print("No business name found.")
+            logging.warning("No business name found.")
         
         website = ""
         try:
             website_element = driver.find_element(By.CSS_SELECTOR, "a[data-item-id*='authority']")
             website = clean_url(website_element.get_attribute("href"))
-            print(f"Found website: {website}")
+            logging.info(f"Found website: {website}")
         except NoSuchElementException:
-            print("No website link found.")
+            logging.info("No website link found.")
         
         phone = ""
         try:
             phone_element = driver.find_element(By.CSS_SELECTOR, "button[data-item-id*='phone']")
             phone = clean_phone(phone_element.get_attribute("aria-label").replace("Phone:", "").strip())
-            print(f"Found phone: {phone}")
+            logging.info(f"Found phone: {phone}")
         except NoSuchElementException:
-            print("No phone number found.")
+            logging.info("No phone number found.")
         
+        time.sleep(random.uniform(1, 2))  # Random delay
         return business_name, website, phone
     except TimeoutException:
-        print(f"Timeout loading business page: {url}.")
+        logging.warning(f"Timeout loading business page: {url}.")
         return "", "", ""
     except Exception as e:
-        print(f"Error processing business page {url}: {e}")
+        logging.error(f"Error processing business page {url}: {str(e)}")
         return "", "", ""
 
 def save_to_csv(businesses, filename="phones.csv"):
     """Save business names, websites, and phone numbers to a CSV file."""
-    print(f"Saving {len(businesses)} businesses to {filename}...")
+    logging.info(f"Saving {len(businesses)} businesses to {filename}...")
     try:
         with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['Business Name', 'Website', 'Phone'])
             for name, website, phone in businesses:
                 writer.writerow([name, website or 'N/A', phone or 'N/A'])
-        print(f"Businesses successfully saved to {filename}.")
+        logging.info(f"Businesses successfully saved to {filename}.")
     except Exception as e:
-        print(f"Error saving to CSV: {e}")
+        logging.error(f"Error saving to CSV: {str(e)}")
 
 def save_websites_to_csv(businesses, filename="websites.csv"):
     """Save business names and website URLs to a CSV file."""
-    print(f"Saving {len(businesses)} businesses to {filename}...")
+    logging.info(f"Saving {len(businesses)} businesses to {filename}...")
     try:
         with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
@@ -181,61 +207,67 @@ def save_websites_to_csv(businesses, filename="websites.csv"):
             for name, website, _ in businesses:
                 if website:
                     writer.writerow([name, website])
-        print(f"Websites successfully saved to {filename}.")
+        logging.info(f"Websites successfully saved to {filename}.")
     except Exception as e:
-        print(f"Error saving to CSV: {e}")
+        logging.error(f"Error saving to CSV: {str(e)}")
 
-def scrape_google_maps(search_term, max_time=300):
+def scrape_google_maps(search_term, max_time=600):
     """Scrape business names, website URLs, and phone numbers from Google Maps."""
     driver = setup_driver()
     if not driver:
+        logging.error("Failed to initialize driver. Aborting scrape.")
         return []
 
     start_time = time.time()
     businesses = set()
     try:
-        print("Navigating to Google Maps...")
+        logging.info("Navigating to Google Maps...")
         driver.get("https://www.google.com/maps")
-        WebDriverWait(driver, 5).until(
-            EC.presence_of_element_located((By.ID, "searchboxinput"))
-        )
-        
-        print(f"Searching for: {search_term}")
-        search_box = driver.find_element(By.ID, "searchboxinput")
-        search_box.send_keys(search_term)
-        search_box.send_keys(Keys.ENTER)
+        time.sleep(random.uniform(2, 4))
+        try:
+            search_box = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "searchboxinput"))
+            )
+            logging.info(f"Searching for: {search_term}")
+            search_box.send_keys(search_term)
+            search_box.send_keys(Keys.ENTER)
+            time.sleep(random.uniform(2, 4))
+        except TimeoutException:
+            logging.error("Timeout waiting for search box. Possible CAPTCHA or network issue.")
+            driver.quit()
+            return []
         
         scroll_pane_selector = "div[role='feed']"
         results_selector = "a[href*='/maps/place/']"
-        WebDriverWait(driver, 5).until(
+        WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, scroll_pane_selector))
         )
         
-        scroll_and_paginate(driver, scroll_pane_selector)
+        if not scroll_and_paginate(driver, scroll_pane_selector, max_time):
+            logging.warning("Pagination incomplete due to timeout or error.")
         
         business_links = get_business_links(driver, results_selector)
+        if not business_links:
+            logging.warning("No business links found.")
         
-        target_businesses = 150
         for i, link in enumerate(business_links, 1):
-            if time.time() - start_time > max_time or len(businesses) >= target_businesses:
-                print(f"Stopping scrape: {len(businesses)} businesses collected or time limit reached.")
+            if time.time() - start_time > max_time:
+                logging.info(f"Stopping scrape: Time limit reached after {len(businesses)} businesses.")
                 break
-            print(f"Processing business {i}/{len(business_links)}...")
+            logging.info(f"Processing business {i}/{len(business_links)}...")
             name, website, phone = extract_business_info(driver, link)
             if name or website or phone:
                 businesses.add((name, website, phone))
         
     except KeyboardInterrupt:
-        print("\nUser interrupted scraping (Ctrl+C). Saving progress...")
+        logging.info("User interrupted scraping. Saving progress...")
         save_to_csv(businesses)
         save_websites_to_csv(businesses)
         raise
-    except TimeoutException:
-        print("Timeout during Google Maps search.")
     except Exception as e:
-        print(f"Error during scraping: {e}")
+        logging.error(f"Error during scraping: {str(e)}")
     finally:
-        print("Closing Chrome browser...")
+        logging.info("Closing Chrome browser...")
         try:
             driver.quit()
         except:
@@ -243,27 +275,27 @@ def scrape_google_maps(search_term, max_time=300):
     
     businesses = list(businesses)
     elapsed_time = time.time() - start_time
-    print(f"Scraping completed in {elapsed_time:.2f} seconds. Collected {len(businesses)} businesses.")
+    logging.info(f"Scraping completed in {elapsed_time:.2f} seconds. Collected {len(businesses)} businesses.")
     return businesses
 
 def main(search_term):
     """Main function to run the Google Maps scraper."""
-    print(f"\n=== Starting Google Maps Scrape for: {search_term} ===")
+    logging.info(f"\n=== Starting Google Maps Scrape for: {search_term} ===")
     try:
         businesses = scrape_google_maps(search_term)
         if businesses:
-            print(f"\nFound {len(businesses)} unique businesses:")
+            logging.info(f"\nFound {len(businesses)} unique businesses:")
             for i, (name, website, phone) in enumerate(businesses, 1):
-                print(f"{i}. {name}: {website or 'N/A'}, {phone or 'N/A'}")
+                logging.info(f"{i}. {name}: {website or 'N/A'}, {phone or 'N/A'}")
             save_to_csv(businesses)
             save_websites_to_csv(businesses)
         else:
-            print("No businesses found.")
+            logging.info("No businesses found.")
         return businesses
     except KeyboardInterrupt:
-        print("\nScraping stopped by user.")
+        logging.info("\nScraping stopped by user.")
         return []
 
 if __name__ == "__main__":
-    search_term = input("Enter the search term (e.g., dental clinics in London): ").strip()
+    search_term = input("Enter the search term (e.g., dental clinics in Lahore): ").strip()
     main(search_term)

@@ -5,7 +5,7 @@ import os
 from app import app
 
 def launch_app():
-    """Launch Flask server and open browser."""
+    """Launch Flask server and open browser for local testing."""
     print("Starting MapPhone Extractor...")
     os.makedirs("templates", exist_ok=True)
     os.makedirs("static/css", exist_ok=True)
@@ -19,7 +19,6 @@ def launch_app():
     )
     
     time.sleep(2)
-    
     print("Opening web interface in your default browser...")
     webbrowser.open("http://localhost:5000")
     

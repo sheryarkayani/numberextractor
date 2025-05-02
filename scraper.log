@@ -1,0 +1,176 @@
+2025-05-02 16:52:32,616 - INFO - Starting Flask server...
+2025-05-02 16:52:32,632 - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-05-02 16:52:32,632 - INFO -  * Running on http://192.168.18.17:5000/ (Press CTRL+C to quit)
+2025-05-02 16:52:43,117 - INFO - Serving web interface
+2025-05-02 16:52:43,121 - INFO - 127.0.0.1 - - [02/May/2025 16:52:43] "GET / HTTP/1.1" 200 -
+2025-05-02 16:52:43,203 - INFO - 127.0.0.1 - - [02/May/2025 16:52:43] "GET /static/css/styles.css HTTP/1.1" 200 -
+2025-05-02 16:52:43,231 - INFO - 127.0.0.1 - - [02/May/2025 16:52:43] "GET /static/js/script.js HTTP/1.1" 200 -
+2025-05-02 16:52:55,131 - INFO - Starting Web Scrape for: dental clinics in lahore
+2025-05-02 16:52:55,132 - INFO - 
+=== Starting Google Maps Scrape for: dental clinics in lahore ===
+2025-05-02 16:52:55,132 - INFO - Initializing Chrome browser...
+2025-05-02 16:52:55,133 - INFO - ====== WebDriver manager ======
+2025-05-02 16:52:55,279 - INFO - Get LATEST chromedriver version for google-chrome
+2025-05-02 16:52:55,994 - INFO - Get LATEST chromedriver version for google-chrome
+2025-05-02 16:52:56,608 - INFO - Driver [/home/sheryar/.wdm/drivers/chromedriver/linux64/135.0.7049.114/chromedriver-linux64/chromedriver] found in cache
+2025-05-02 16:52:56,609 - INFO - Starting ChromeDriver...
+2025-05-02 16:52:57,528 - ERROR - Error initializing Chrome driver: 'Options' object has no attribute 'headless'
+2025-05-02 16:52:57,654 - ERROR - Failed to initialize driver. Aborting scrape.
+2025-05-02 16:52:57,654 - INFO - No businesses found.
+2025-05-02 16:52:57,654 - ERROR - No businesses found.
+2025-05-02 16:52:57,655 - INFO - 127.0.0.1 - - [02/May/2025 16:52:57] "[31m[1mPOST /start_scrape HTTP/1.1[0m" 400 -
+2025-05-02 17:01:59,521 - INFO - Starting Flask server...
+2025-05-02 17:01:59,537 - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-05-02 17:01:59,537 - INFO -  * Running on http://192.168.18.17:5000/ (Press CTRL+C to quit)
+2025-05-02 17:02:04,480 - INFO - Serving web interface
+2025-05-02 17:02:04,493 - INFO - 127.0.0.1 - - [02/May/2025 17:02:04] "GET / HTTP/1.1" 200 -
+2025-05-02 17:02:04,632 - INFO - 127.0.0.1 - - [02/May/2025 17:02:04] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2025-05-02 17:02:04,633 - INFO - 127.0.0.1 - - [02/May/2025 17:02:04] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-05-02 17:02:11,363 - INFO - Starting Web Scrape for: dental clinics in lahore
+2025-05-02 17:02:11,364 - INFO - 
+=== Starting Google Maps Scrape for: dental clinics in lahore ===
+2025-05-02 17:02:11,364 - INFO - Initializing Chrome browser...
+2025-05-02 17:02:11,365 - INFO - ====== WebDriver manager ======
+2025-05-02 17:02:11,507 - INFO - Get LATEST chromedriver version for google-chrome
+2025-05-02 17:02:12,226 - INFO - Get LATEST chromedriver version for google-chrome
+2025-05-02 17:02:12,839 - INFO - Driver [/home/sheryar/.wdm/drivers/chromedriver/linux64/135.0.7049.114/chromedriver-linux64/chromedriver] found in cache
+2025-05-02 17:02:12,839 - INFO - Starting ChromeDriver...
+2025-05-02 17:02:13,716 - INFO - Chrome browser initialized successfully.
+2025-05-02 17:02:13,717 - INFO - Navigating to Google Maps...
+2025-05-02 17:02:24,672 - INFO - Searching for: dental clinics in lahore
+2025-05-02 17:02:26,983 - INFO - Scrolling and paginating Google Maps results...
+2025-05-02 17:02:29,985 - INFO - No 'Next' button found. End of results.
+2025-05-02 17:02:29,986 - INFO - Extracting business detail page links...
+2025-05-02 17:02:30,147 - INFO - Found 20 business links.
+2025-05-02 17:02:30,148 - INFO - Processing business 1/20...
+2025-05-02 17:02:30,148 - INFO - Visiting business page: https://www.google.com/maps/place/Dr.+Shahzad+Mirza/data=!4m7!3m6!1s0x3919071b773aad85:0x39e8ca0f0efe34ba!8m2!3d31.471864!4d74.37565!16s%2Fg%2F11rcvcnq49!19sChIJha06dxsHGTkRujT-Dg_K6Dk?authuser=0&hl=en&rclk=1
+2025-05-02 17:02:38,670 - INFO - Business name: Dr. Shahzad Mirza
+2025-05-02 17:02:38,708 - INFO - Found website: https://drshahzadmirza.com/
+2025-05-02 17:02:38,745 - INFO - Found phone: 03218406474
+2025-05-02 17:02:40,167 - INFO - Processing business 2/20...
+2025-05-02 17:02:40,167 - INFO - Visiting business page: https://www.google.com/maps/place/SmileOn+Dental/data=!4m7!3m6!1s0x391901b0bfa8bf01:0xcefa46ebd8c4f805!8m2!3d31.441338!4d74.267719!16s%2Fg%2F11fsk08z5d!19sChIJAb-ov7ABGTkRBfjE2OtG-s4?authuser=0&hl=en&rclk=1
+2025-05-02 17:02:43,951 - INFO - Business name: SmileOn Dental
+2025-05-02 17:02:44,495 - INFO - Found website: https://www.smileon.pk/
+2025-05-02 17:02:44,601 - INFO - Found phone: 03311066666
+2025-05-02 17:02:45,816 - INFO - Processing business 3/20...
+2025-05-02 17:02:45,816 - INFO - Visiting business page: https://www.google.com/maps/place/Dental+Clinic+by+Dr+Bilal/data=!4m7!3m6!1s0x39190382b939c9a7:0x36b195da3c200cf!8m2!3d31.4685953!4d74.2664433!16s%2Fg%2F11lgqk9_jt!19sChIJp8k5uYIDGTkRzwDCo10ZawM?authuser=0&hl=en&rclk=1
+2025-05-02 17:02:49,388 - INFO - Business name: Dental Clinic by Dr Bilal
+2025-05-02 17:02:49,527 - INFO - Found website: https://drbilaldentist.com/
+2025-05-02 17:02:49,785 - INFO - Found phone: 03316018700
+2025-05-02 17:02:51,490 - INFO - Processing business 4/20...
+2025-05-02 17:02:51,491 - INFO - Visiting business page: https://www.google.com/maps/place/Dr+Imran%27s+Multispeciality+Dental+Care/data=!4m7!3m6!1s0x39190595f311fa29:0xb711a7066f19dcce!8m2!3d31.4713722!4d74.3739012!16s%2Fg%2F11jkrclvt4!19sChIJKfoR85UFGTkRztwZbwanEbc?authuser=0&hl=en&rclk=1
+2025-05-02 17:02:54,452 - INFO - Business name: Dr Imran's Multispeciality Dental Care
+2025-05-02 17:02:54,507 - INFO - Found website: http://www.drimrandentalcare.com/
+2025-05-02 17:02:54,585 - INFO - Found phone: 03214337732
+2025-05-02 17:02:55,884 - INFO - Processing business 5/20...
+2025-05-02 17:02:55,885 - INFO - Visiting business page: https://www.google.com/maps/place/Smile+Hub+Clinics/data=!4m7!3m6!1s0x391901f990d9349d:0xdc275d126024079c!8m2!3d31.462573!4d74.2746528!16s%2Fg%2F11kvq1skk5!19sChIJnTTZkPkBGTkRnAckYBJdJ9w?authuser=0&hl=en&rclk=1
+2025-05-02 17:02:59,023 - INFO - Business name: Smile Hub Clinics
+2025-05-02 17:02:59,078 - INFO - Found website: https://www.instagram.com/smilehubclinics/
+2025-05-02 17:02:59,137 - INFO - No phone number found.
+2025-05-02 17:03:01,117 - INFO - Processing business 6/20...
+2025-05-02 17:03:01,117 - INFO - Visiting business page: https://www.google.com/maps/place/Dental+Avenue+Hospital/data=!4m7!3m6!1s0x39190581fec9fc51:0x34633cd5821d0850!8m2!3d31.5440746!4d74.402318!16s%2Fg%2F11q3phvj1b!19sChIJUfzJ_oEFGTkRUAgdgtU8YzQ?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:05,738 - INFO - Business name: Dental Avenue Hospital
+2025-05-02 17:03:06,016 - INFO - No website link found.
+2025-05-02 17:03:06,168 - INFO - Found phone: 03330606601
+2025-05-02 17:03:07,727 - INFO - Processing business 7/20...
+2025-05-02 17:03:07,728 - INFO - Visiting business page: https://www.google.com/maps/place/Bright+Smile+Dental+Aesthetics+,+Best+Dental+Clinic+in+Johar+town+Lahore/data=!4m7!3m6!1s0x3919015250ebeec7:0x1a953dddf3179524!8m2!3d31.4528379!4d74.2725064!16s%2Fg%2F11l24h7sms!19sChIJx-7rUFIBGTkRJJUX8909lRo?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:10,994 - INFO - Business name: Bright Smile Dental Aesthetics , Best Dental Clinic in Johar town Lahore
+2025-05-02 17:03:11,076 - INFO - Found website: http://brightsmiledentalaesthetics.com/
+2025-05-02 17:03:11,185 - INFO - Found phone: 03374800486
+2025-05-02 17:03:12,940 - INFO - Processing business 8/20...
+2025-05-02 17:03:12,941 - INFO - Visiting business page: https://www.google.com/maps/place/Hafiz+dental+clinic/data=!4m7!3m6!1s0x3919055b5f5684f7:0x9fcf070ee8bf9e2a!8m2!3d31.4915149!4d74.3714411!16s%2Fg%2F11lh6dwng5!19sChIJ94RWX1sFGTkRKp6_6A4Hz58?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:16,133 - INFO - Business name: Hafiz dental clinic
+2025-05-02 17:03:16,201 - INFO - No website link found.
+2025-05-02 17:03:16,356 - INFO - Found phone: 03004374908
+2025-05-02 17:03:17,495 - INFO - Processing business 9/20...
+2025-05-02 17:03:17,495 - INFO - Visiting business page: https://www.google.com/maps/place/Dental+Aesthetics/data=!4m7!3m6!1s0x39190673f9538229:0x9a3c0cbac6f89782!8m2!3d31.4721118!4d74.3763565!16s%2Fg%2F11bzs4pdxw!19sChIJKYJT-XMGGTkRgpf4xroMPJo?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:21,616 - INFO - Business name: Dental Aesthetics
+2025-05-02 17:03:21,656 - INFO - Found website: https://dentalaesthetics.pk/
+2025-05-02 17:03:21,733 - INFO - Found phone: 03218406474
+2025-05-02 17:03:23,277 - INFO - Processing business 10/20...
+2025-05-02 17:03:23,278 - INFO - Visiting business page: https://www.google.com/maps/place/Alina+Dental+clinics,+Orthodontics+and+Implantology+center/data=!4m7!3m6!1s0x39190100a1e3047d:0x49ea4bc6c69456d!8m2!3d31.4237969!4d74.2651584!16s%2Fg%2F1tz74c43!19sChIJfQTjoQABGTkRbUVpbLykngQ?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:26,856 - INFO - Business name: Alina Dental clinics, Orthodontics and Implantology center
+2025-05-02 17:03:26,953 - INFO - Found website: http://www.alinadentalclinic.com/
+2025-05-02 17:03:26,971 - INFO - Found phone: 03111248888
+2025-05-02 17:03:27,978 - INFO - Processing business 11/20...
+2025-05-02 17:03:27,978 - INFO - Visiting business page: https://www.google.com/maps/place/DentX+Dental+%26+Medical+Clinic/data=!4m7!3m6!1s0x391901813b8abbcf:0x31f79f4d6f01115f!8m2!3d31.4196801!4d74.2627963!16s%2Fg%2F11rzqbtqhq!19sChIJz7uKO4EBGTkRXxEBb02f9zE?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:30,461 - INFO - Business name: DentX Dental & Medical Clinic
+2025-05-02 17:03:30,505 - INFO - Found website: https://thedentxclinic.com/
+2025-05-02 17:03:30,523 - INFO - Found phone: 03001750502
+2025-05-02 17:03:32,478 - INFO - Processing business 12/20...
+2025-05-02 17:03:32,478 - INFO - Visiting business page: https://www.google.com/maps/place/Innovodent+dental+clinic+Dr+Talal+%26+associates/data=!4m7!3m6!1s0x39191d83007968c3:0xb8ee717e568cdddd!8m2!3d31.5631048!4d74.2800157!16s%2Fg%2F11gtg5sc3w!19sChIJw2h5AIMdGTkR3d2MVn5x7rg?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:38,279 - INFO - Business name: Innovodent dental clinic Dr Talal & associates
+2025-05-02 17:03:38,356 - INFO - Found website: https://www.facebook.com/innovoDent
+2025-05-02 17:03:38,406 - INFO - Found phone: 03188421992
+2025-05-02 17:03:40,016 - INFO - Processing business 13/20...
+2025-05-02 17:03:40,016 - INFO - Visiting business page: https://www.google.com/maps/place/Dental+Clinic+Lahore+by+Dr+Ayesha+Dentist+doctor/data=!4m7!3m6!1s0x391903e91cf4893f:0x113a2c03fe92fc44!8m2!3d31.4732152!4d74.2591497!16s%2Fg%2F11rxxjh5gc!19sChIJP4n0HOkDGTkRRPyS_gMsOhE?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:42,912 - INFO - Business name: Dental Clinic Lahore by Dr Ayesha Dentist doctor
+2025-05-02 17:03:43,356 - INFO - Found website: https://drayeshaayubdentalsurgeon.com/
+2025-05-02 17:03:43,483 - INFO - Found phone: 03104339470
+2025-05-02 17:03:44,789 - INFO - Processing business 14/20...
+2025-05-02 17:03:44,789 - INFO - Visiting business page: https://www.google.com/maps/place/Smile+Solutions/data=!4m7!3m6!1s0x39191bf951ab45cf:0x99f9097989254a41!8m2!3d31.489078!4d74.3257141!16s%2Fg%2F11sf1dw4wq!19sChIJz0WrUfkbGTkRQUoliXkJ-Zk?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:47,602 - INFO - Business name: Smile Solutions
+2025-05-02 17:03:47,667 - INFO - Found website: http://www.smilesolutions.pk/
+2025-05-02 17:03:47,742 - INFO - Found phone: 03000933343
+2025-05-02 17:03:48,962 - INFO - Processing business 15/20...
+2025-05-02 17:03:48,963 - INFO - Visiting business page: https://www.google.com/maps/place/Al+Aziz+Family+Dental+clinic+24%2F7+open/data=!4m7!3m6!1s0x3919016591358891:0x3e8756b78233e44b!8m2!3d31.4559296!4d74.2805962!16s%2Fg%2F11b7227sld!19sChIJkYg1kWUBGTkRS-QzgrdWhz4?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:52,395 - INFO - Business name: Al Aziz Family Dental clinic 24/7 open
+2025-05-02 17:03:52,664 - INFO - Found website: https://alazizcare.com/
+2025-05-02 17:03:52,806 - INFO - Found phone: 03214397073
+2025-05-02 17:03:54,767 - INFO - Processing business 16/20...
+2025-05-02 17:03:54,768 - INFO - Visiting business page: https://www.google.com/maps/place/Al-Rasheed+Dental+Clinic+-+DR.+SHAHEER+AHMED+BUTT+-+Best+Dentist+in+Lahore+Top-Rated+Dental+Clinic+in+DHA/data=!4m7!3m6!1s0x391905d916c99f57:0x18d99baea467d2a!8m2!3d31.486631!4d74.3774405!16s%2Fg%2F11lfpqygsk!19sChIJV5_JFtkFGTkRKn1G6rqZjQE?authuser=0&hl=en&rclk=1
+2025-05-02 17:03:59,101 - INFO - Business name: Al-Rasheed Dental Clinic - DR. SHAHEER AHMED BUTT - Best Dentist in Lahore Top-Rated Dental Clinic in DHA
+2025-05-02 17:03:59,118 - INFO - No website link found.
+2025-05-02 17:03:59,138 - INFO - Found phone: 03360434394
+2025-05-02 17:04:00,907 - INFO - Processing business 17/20...
+2025-05-02 17:04:00,908 - INFO - Visiting business page: https://www.google.com/maps/place/iDentist/data=!4m7!3m6!1s0x3919058b65c2f889:0x73d0d796901a9bb9!8m2!3d31.4887133!4d74.3269522!16s%2Fg%2F11g072fh8c!19sChIJifjCZYsFGTkRuZsakJbX0HM?authuser=0&hl=en&rclk=1
+2025-05-02 17:04:03,607 - INFO - Business name: iDentist
+2025-05-02 17:04:03,627 - INFO - Found website: https://oladoc.com/pakistan/lahore/dr/dentist/hira-anees/268906
+2025-05-02 17:04:03,900 - INFO - Found phone: 03078333600
+2025-05-02 17:04:05,515 - INFO - Processing business 18/20...
+2025-05-02 17:04:05,515 - INFO - Visiting business page: https://www.google.com/maps/place/DH+Dental+Clinic/data=!4m7!3m6!1s0x391903f65a493557:0xac3bd7abf4ce6153!8m2!3d31.4797571!4d74.2804939!16s%2Fg%2F11f5_hczhv!19sChIJVzVJWvYDGTkRU2HO9KvXO6w?authuser=0&hl=en&rclk=1
+2025-05-02 17:04:08,295 - INFO - Business name: DH Dental Clinic
+2025-05-02 17:04:08,318 - INFO - Found website: http://www.dh.dental/
+2025-05-02 17:04:08,630 - INFO - Found phone: 03223368251
+2025-05-02 17:04:10,014 - INFO - Processing business 19/20...
+2025-05-02 17:04:10,014 - INFO - Visiting business page: https://www.google.com/maps/place/CURE+N+CARE+DENTAL+CENTRE/data=!4m7!3m6!1s0x391903db15712a6b:0x1261fecf009d696e!8m2!3d31.4752214!4d74.2808619!16s%2Fg%2F11cnpjdgfh!19sChIJaypxFdsDGTkRbmmdAM_-YRI?authuser=0&hl=en&rclk=1
+2025-05-02 17:04:13,445 - INFO - Business name: CURE N CARE DENTAL CENTRE
+2025-05-02 17:04:13,466 - INFO - Found website: https://curencaredentalcenter.com/
+2025-05-02 17:04:13,492 - INFO - Found phone: 03030171000
+2025-05-02 17:04:14,720 - INFO - Processing business 20/20...
+2025-05-02 17:04:14,720 - INFO - Visiting business page: https://www.google.com/maps/place/Teeth+and+Smile+Dental+Clinic/data=!4m7!3m6!1s0x3919051fd421492f:0xcb0e9062d0550ee4!8m2!3d31.5104717!4d74.3523501!16s%2Fg%2F11trrldflz!19sChIJL0kh1B8FGTkR5A5V0GKQDss?authuser=0&hl=en&rclk=1
+2025-05-02 17:04:18,556 - INFO - Business name: Teeth and Smile Dental Clinic
+2025-05-02 17:04:18,574 - INFO - Found website: https://teethandsmile.pk/
+2025-05-02 17:04:18,603 - INFO - Found phone: 03277088881
+2025-05-02 17:04:20,044 - INFO - Closing Chrome browser...
+2025-05-02 17:04:20,293 - INFO - Scraping completed in 126.58 seconds. Collected 20 businesses.
+2025-05-02 17:04:20,295 - INFO - 
+Found 20 unique businesses:
+2025-05-02 17:04:20,295 - INFO - 1. Dr Imran's Multispeciality Dental Care: http://www.drimrandentalcare.com/, 03214337732
+2025-05-02 17:04:20,295 - INFO - 2. Dental Avenue Hospital: N/A, 03330606601
+2025-05-02 17:04:20,296 - INFO - 3. Teeth and Smile Dental Clinic: https://teethandsmile.pk/, 03277088881
+2025-05-02 17:04:20,296 - INFO - 4. Dental Clinic by Dr Bilal: https://drbilaldentist.com/, 03316018700
+2025-05-02 17:04:20,296 - INFO - 5. Al-Rasheed Dental Clinic - DR. SHAHEER AHMED BUTT - Best Dentist in Lahore Top-Rated Dental Clinic in DHA: N/A, 03360434394
+2025-05-02 17:04:20,296 - INFO - 6. Dental Aesthetics: https://dentalaesthetics.pk/, 03218406474
+2025-05-02 17:04:20,296 - INFO - 7. Alina Dental clinics, Orthodontics and Implantology center: http://www.alinadentalclinic.com/, 03111248888
+2025-05-02 17:04:20,296 - INFO - 8. Dr. Shahzad Mirza: https://drshahzadmirza.com/, 03218406474
+2025-05-02 17:04:20,296 - INFO - 9. Dental Clinic Lahore by Dr Ayesha Dentist doctor: https://drayeshaayubdentalsurgeon.com/, 03104339470
+2025-05-02 17:04:20,296 - INFO - 10. Hafiz dental clinic: N/A, 03004374908
+2025-05-02 17:04:20,296 - INFO - 11. Bright Smile Dental Aesthetics , Best Dental Clinic in Johar town Lahore: http://brightsmiledentalaesthetics.com/, 03374800486
+2025-05-02 17:04:20,297 - INFO - 12. DentX Dental & Medical Clinic: https://thedentxclinic.com/, 03001750502
+2025-05-02 17:04:20,297 - INFO - 13. CURE N CARE DENTAL CENTRE: https://curencaredentalcenter.com/, 03030171000
+2025-05-02 17:04:20,297 - INFO - 14. Innovodent dental clinic Dr Talal & associates: https://www.facebook.com/innovoDent, 03188421992
+2025-05-02 17:04:20,297 - INFO - 15. Smile Solutions: http://www.smilesolutions.pk/, 03000933343
+2025-05-02 17:04:20,297 - INFO - 16. iDentist: https://oladoc.com/pakistan/lahore/dr/dentist/hira-anees/268906, 03078333600
+2025-05-02 17:04:20,297 - INFO - 17. SmileOn Dental: https://www.smileon.pk/, 03311066666
+2025-05-02 17:04:20,297 - INFO - 18. DH Dental Clinic: http://www.dh.dental/, 03223368251
+2025-05-02 17:04:20,297 - INFO - 19. Smile Hub Clinics: https://www.instagram.com/smilehubclinics/, N/A
+2025-05-02 17:04:20,297 - INFO - 20. Al Aziz Family Dental clinic 24/7 open: https://alazizcare.com/, 03214397073
+2025-05-02 17:04:20,297 - INFO - Saving 20 businesses to phones.csv...
+2025-05-02 17:04:20,298 - INFO - Businesses successfully saved to phones.csv.
+2025-05-02 17:04:20,298 - INFO - Saving 20 businesses to websites.csv...
+2025-05-02 17:04:20,298 - INFO - Websites successfully saved to websites.csv.
+2025-05-02 17:04:20,298 - INFO - Collected 20 businesses.
+2025-05-02 17:04:20,299 - INFO - 127.0.0.1 - - [02/May/2025 17:04:20] "POST /start_scrape HTTP/1.1" 200 -
