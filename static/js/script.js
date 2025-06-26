@@ -10,10 +10,9 @@ document.getElementById('scrapeBtn').addEventListener('click', async () => {
     const modalMessage = document.getElementById('modalMessage');
     const proceedBtn = document.getElementById('proceedBtn');
     const cancelBtn = document.getElementById('cancelBtn');
-    const loadingSpinner = document.getElementById('loadingSpinner');
     
     modalTitle.textContent = 'Start Scraping?';
-    modalMessage.textContent = `Do you want to start scraping phone numbers for "${searchTerm}"?`;
+    modalMessage.textContent = `Do you want to start scraping phone numbers for "${searchTerm}"? This might take a few minutes.`;
     modal.classList.remove('hidden');
     
     const proceed = await new Promise(resolve => {
@@ -26,120 +25,112 @@ document.getElementById('scrapeBtn').addEventListener('click', async () => {
     const progressDiv = document.getElementById('progress');
     const progressText = document.getElementById('progressText');
     const progressBar = document.getElementById('progressBar');
-    const etaText = document.getElementById('etaText');
     const resultsDiv = document.getElementById('results');
     const resultsTable = document.getElementById('resultsTable');
     const scrapeBtn = document.getElementById('scrapeBtn');
-    
-    progressDiv.classList.remove('hidden', 'bg-red-100', 'bg-yellow-100', 'bg-green-100');
-    progressDiv.classList.add('bg-white');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    progressDiv.classList.remove('hidden', 'bg-red-100', 'bg-green-100');
     resultsDiv.classList.add('hidden');
     resultsTable.innerHTML = '';
     scrapeBtn.disabled = true;
-    progressText.textContent = `Initializing scrape for "${searchTerm}"...`;
-    progressBar.style.width = '5%';
     loadingSpinner.classList.remove('hidden');
+    progressText.textContent = `Scraping for "${searchTerm}" has started. Please wait...`;
+    progressBar.classList.add('indeterminate');
     
     try {
-        let response = await fetch('/start_scrape', {
+        const response = await fetch('/start_scrape', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ search_term: searchTerm })
         });
-        let data = await response.json();
-        loadingSpinner.classList.add('hidden');
+        const data = await response.json();
 
         if (data.error) {
-            progressDiv.classList.add('bg-red-100');
-            progressText.textContent = `Error: ${data.error}. Check logs.`;
-            alert(`Error: ${data.error}`);
-            return;
+            throw new Error(data.error);
         }
 
-        progressText.textContent = data.message;
-        progressBar.style.width = '10%';
-        const totalBusinesses = data.business_count;
-        let batch = 0;
-        let batchStartTime;
+        const jobId = data.job_id;
+        pollJobStatus(jobId);
 
-        while (data.status !== 'complete') {
-            modalTitle.textContent = `Continue Processing Batch ${batch + 1}?`;
-            modalMessage.textContent = `Processed ${data.results ? data.results.length : 0} of ${totalBusinesses} businesses. Proceed with next batch of 30? (${data.remaining || 0} remaining)`;
-            modal.classList.remove('hidden');
-            
-            const continueBatch = await new Promise(resolve => {
-                proceedBtn.onclick = () => { modal.classList.add('hidden'); resolve(true); };
-                cancelBtn.onclick = () => { modal.classList.add('hidden'); resolve(false); };
-            });
-            
-            if (!continueBatch) {
-                progressDiv.classList.add('bg-yellow-100');
-                progressText.textContent = 'Scraping cancelled by user.';
-                alert('Scraping cancelled.');
-                break;
-            }
-            
-            batchStartTime = Date.now();
-            progressText.textContent = `Processing batch ${batch + 1}...`;
-            progressBar.style.width = `${10 + (batch + 1) * 10}%`;
-            loadingSpinner.classList.remove('hidden');
-            
-            response = await fetch('/scrape_batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({})
-            });
-            data = await response.json();
-            loadingSpinner.classList.add('hidden');
-            
-            if (data.error) {
-                progressDiv.classList.add('bg-red-100');
-                progressText.textContent = `Error: ${data.error}. Check logs.`;
-                alert(`Error: ${data.error}`);
-                return;
-            }
-            
-            const batchDuration = (Date.now() - batchStartTime) / 1000;
-            const remainingBatches = Math.ceil(data.remaining / 30);
-            const etaSeconds = remainingBatches * batchDuration;
-            etaText.textContent = `Estimated time remaining: ${Math.round(etaSeconds / 60)} minutes`;
-            
-            progressText.textContent = data.message;
-            resultsTable.innerHTML = '';
-            data.results.forEach(result => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-6 py-3">${result.business_name || 'N/A'}</td>
-                    <td class="px-6 py-3"><a href="${result.website}" target="_blank" class="text-blue-600 hover:underline">${result.website}</a></td>
-                    <td class="px-6 py-3">${result.phone}</td>
-                `;
-                resultsTable.appendChild(row);
-            });
-            
-            resultsDiv.classList.remove('hidden');
-            batch++;
-        }
-        
-        if (data.status === 'complete') {
-            progressDiv.classList.add('bg-green-100');
-            progressBar.style.width = '100%';
-            progressText.textContent = data.message;
-            etaText.textContent = '';
-            const downloadWebsites = document.getElementById('downloadWebsites');
-            const downloadPhones = document.getElementById('downloadPhones');
-            downloadWebsites.href = data.websites_csv;
-            downloadPhones.href = data.phones_csv;
-            downloadWebsites.classList.remove('hidden');
-            downloadPhones.classList.remove('hidden');
-            alert('Scraping completed successfully!');
-        }
-        
     } catch (error) {
         progressDiv.classList.add('bg-red-100');
-        progressText.textContent = `Error: ${error.message}. Check logs.`;
-        alert(`Error: ${error.message}`);
-    } finally {
+        progressText.textContent = `Error: ${error.message}`;
         scrapeBtn.disabled = false;
         loadingSpinner.classList.add('hidden');
     }
 });
+
+function pollJobStatus(jobId, startTime = Date.now()) {
+    const progressDiv = document.getElementById('progress');
+    const progressText = document.getElementById('progressText');
+    const progressBar = document.getElementById('progressBar');
+    const resultsDiv = document.getElementById('results');
+    const resultsTable = document.getElementById('resultsTable');
+    const scrapeBtn = document.getElementById('scrapeBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    const MAX_POLL_DURATION = 10 * 60 * 1000; // 10 minutes
+    const elapsedTime = Date.now() - startTime;
+    
+    if (elapsedTime > MAX_POLL_DURATION) {
+        throw new Error('Scraping timeout. Please try again.');
+    }
+
+    fetch(`/scrape_status/${jobId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'running') {
+                // Update progress bar - maybe with a pulsing animation or indeterminate state
+                const currentWidth = parseFloat(progressBar.style.width) || 0;
+                const newWidth = currentWidth < 95 ? currentWidth + 2 : 95; // Slow progress
+                progressBar.style.width = `${newWidth}%`;
+                progressText.textContent = 'Scraping is in progress, please wait...';
+                setTimeout(() => pollJobStatus(jobId, startTime), 3000); // Poll every 3 seconds
+
+            } else if (data.status === 'complete') {
+                progressBar.style.width = '100%';
+                progressDiv.classList.add('bg-green-100');
+                progressText.textContent = 'Scraping complete!';
+                loadingSpinner.classList.add('hidden');
+                scrapeBtn.disabled = false;
+                
+                resultsTable.innerHTML = ''; // Clear previous results
+                if (data.result && data.result.length > 0) {
+                    data.result.forEach(business => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="px-6 py-4 whitespace-nowrap">${business.business_name}</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><a href="${business.website}" target="_blank" class="text-blue-600 hover:underline">${business.website}</a></td>
+                            <td class="px-6 py-4 whitespace-nowrap">${business.phone}</td>
+                        `;
+                        resultsTable.appendChild(row);
+                    });
+                } else {
+                    resultsTable.innerHTML = '<tr><td colspan="3" class="text-center py-4">No businesses found.</td></tr>';
+                }
+                
+                resultsDiv.classList.remove('hidden');
+                const downloadWebsites = document.getElementById('downloadWebsites');
+                const downloadPhones = document.getElementById('downloadPhones');
+                downloadWebsites.href = data.websites_csv;
+                downloadPhones.href = data.phones_csv;
+                downloadWebsites.classList.remove('hidden');
+                downloadPhones.classList.remove('hidden');
+
+            } else if (data.status === 'failed') {
+                const errorMsg = data.error || 'Scraping job failed. Please check the logs.';
+                throw new Error(errorMsg);
+
+            } else if (data.status === 'not_found') {
+                throw new Error('Scraping job not found. Please try again.');
+            }
+        })
+        .catch(error => {
+            progressDiv.classList.add('bg-red-100');
+            progressText.textContent = `Error: ${error.message}`;
+            progressBar.style.width = '100%';
+            loadingSpinner.classList.add('hidden');
+            scrapeBtn.disabled = false;
+        });
+}
