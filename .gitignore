@@ -1,7 +1,30 @@
+# Ignore virtual environments
+venv/
+
+# Byte-compiled / cache files
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Distribution / packaging
+*.egg
+*.egg-info/
 dist/
 build/
-*.egg-info/
+
+# Environment variables / credentials
 .env
-*.csv
+*.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# PyInstaller artifacts
+*.spec
+
+# VSCode settings (optional)
+.vscode/
+
+# Jupyter Notebook checkpoints (if any)
+.ipynb_checkpoints/
