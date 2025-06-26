@@ -7,7 +7,7 @@ selenium==4.22.0
 webdriver-manager==4.0.2
 lxml==5.2.2
 redis==5.0.7
-rq==1.17.0
+rq==1.16.2
 # Dependencies of flask, pinned for consistent builds
 click==8.0.4
 itsdangerous==2.0.1
